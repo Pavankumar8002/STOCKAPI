@@ -1,0 +1,50 @@
+﻿<Properties StartupConfiguration="{D3938C1C-E9AF-4979-9D22-5DEFE59FBB27}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="STOCKWEBAPI/Service/Login/LoginService.cs">
+    <Files>
+      <File FileName="STOCKWEBAPI/Controllers/Login/LoginController.cs" Line="28" Column="1" />
+      <File FileName="STOCKWEBAPI/Repository/Login/LoginRepo.cs" Line="47" Column="1" />
+      <File FileName="STOCKWEBAPI/Service/Login/LoginService.cs" Line="6" Column="46" />
+      <File FileName="STOCKWEBAPI/ServiceInterface/Login/ILoginService.cs" Line="5" Column="35" />
+      <File FileName="STOCKWEBAPI/RepositoryInterface/Login/ILoginRepo.cs" Line="10" Column="1" />
+      <File FileName="STOCKWEBAPI/DataEntities/Login/LoginRequest.cs" Line="12" Column="1" />
+      <File FileName="STOCKWEBAPI/appsettings.json" Line="12" Column="94" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="STOCKWEBAPI" expanded="True">
+            <Node name="STOCKWEBAPI">
+              <Node name="Controllers" expanded="True">
+                <Node name="Login" expanded="True" />
+              </Node>
+              <Node name="DataEntities" expanded="True">
+                <Node name="Login" expanded="True" />
+              </Node>
+              <Node name="Repository" expanded="True">
+                <Node name="Login" expanded="True" />
+              </Node>
+              <Node name="RepositoryInterface" expanded="True">
+                <Node name="Login" expanded="True" />
+              </Node>
+              <Node name="Service" expanded="True">
+                <Node name="Login" expanded="True">
+                  <Node name="LoginService.cs" selected="True" />
+                </Node>
+              </Node>
+              <Node name="ServiceInterface" expanded="True">
+                <Node name="Login" expanded="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.STOCKWEBAPI PreferredExecutionTarget="/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+</Properties>
