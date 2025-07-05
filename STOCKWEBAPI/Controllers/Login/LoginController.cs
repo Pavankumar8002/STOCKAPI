@@ -21,15 +21,18 @@ namespace STOCKWEBAPI.Controllers.Login
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login(string username, string password)
         {
-            dynamic authResult = await _loginService.Authenticate(request.Username, request.Password);
+            dynamic authResult = await _loginService.Authenticate(username, password);
+
             if (authResult.status == 1)
             {
-                authResult.token = _jwtTokenGenerator.GenerateToken(request.Username);
+                authResult.token = _jwtTokenGenerator.GenerateToken(username);
                 return Ok(authResult);
             }
+
             return Unauthorized(authResult);
         }
+
     }
 }

@@ -1,40 +1,28 @@
 ﻿<Properties StartupConfiguration="{D3938C1C-E9AF-4979-9D22-5DEFE59FBB27}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="STOCKWEBAPI/Service/Login/LoginService.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="STOCKWEBAPI/Controllers/Users/UsersController.cs">
     <Files>
-      <File FileName="STOCKWEBAPI/Controllers/Login/LoginController.cs" Line="28" Column="1" />
-      <File FileName="STOCKWEBAPI/Repository/Login/LoginRepo.cs" Line="47" Column="1" />
-      <File FileName="STOCKWEBAPI/Service/Login/LoginService.cs" Line="6" Column="46" />
-      <File FileName="STOCKWEBAPI/ServiceInterface/Login/ILoginService.cs" Line="5" Column="35" />
-      <File FileName="STOCKWEBAPI/RepositoryInterface/Login/ILoginRepo.cs" Line="10" Column="1" />
+      <File FileName="STOCKWEBAPI/Controllers/Login/LoginController.cs" Line="26" Column="1" />
+      <File FileName="STOCKWEBAPI/Repository/Login/LoginRepo.cs" Line="35" Column="62" />
+      <File FileName="STOCKWEBAPI/Service/Login/LoginService.cs" Line="26" Column="1" />
+      <File FileName="STOCKWEBAPI/ServiceInterface/Login/ILoginService.cs" Line="8" Column="1" />
+      <File FileName="STOCKWEBAPI/RepositoryInterface/Login/ILoginRepo.cs" Line="7" Column="9" />
       <File FileName="STOCKWEBAPI/DataEntities/Login/LoginRequest.cs" Line="12" Column="1" />
-      <File FileName="STOCKWEBAPI/appsettings.json" Line="12" Column="94" />
+      <File FileName="STOCKWEBAPI/appsettings.json" Line="15" Column="1" />
+      <File FileName="STOCKWEBAPI/Controllers/Users/UsersController.cs" Line="12" Column="40" />
+      <File FileName="STOCKWEBAPI/Repository/Users/UsersRepo.cs" Line="95" Column="1" />
+      <File FileName="STOCKWEBAPI/RepositoryInterface/Users/IUsersRepo.cs" Line="12" Column="1" />
+      <File FileName="STOCKWEBAPI/Service/Users/UsersService.cs" Line="7" Column="33" />
+      <File FileName="STOCKWEBAPI/ServiceInterface/Users/IUsersService.cs" Line="9" Column="1" />
+      <File FileName="STOCKWEBAPI/DataEntities/Users/UsersRequestClass.cs" Line="6" Column="9" />
+      <File FileName="STOCKWEBAPI/Controllers/HomeController.cs" Line="1" Column="1" />
+      <File FileName="STOCKWEBAPI/Program.cs" Line="76" Column="1" />
+      <File FileName="STOCKWEBAPI/Helpers/JwtTokenGenerator.cs" Line="45" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
-          <Node name="STOCKWEBAPI" expanded="True">
-            <Node name="STOCKWEBAPI">
-              <Node name="Controllers" expanded="True">
-                <Node name="Login" expanded="True" />
-              </Node>
-              <Node name="DataEntities" expanded="True">
-                <Node name="Login" expanded="True" />
-              </Node>
-              <Node name="Repository" expanded="True">
-                <Node name="Login" expanded="True" />
-              </Node>
-              <Node name="RepositoryInterface" expanded="True">
-                <Node name="Login" expanded="True" />
-              </Node>
-              <Node name="Service" expanded="True">
-                <Node name="Login" expanded="True">
-                  <Node name="LoginService.cs" selected="True" />
-                </Node>
-              </Node>
-              <Node name="ServiceInterface" expanded="True">
-                <Node name="Login" expanded="True" />
-              </Node>
-            </Node>
+          <Node name="STOCKWEBAPI">
+            <Node name="STOCKWEBAPI" expanded="True" />
           </Node>
         </State>
       </Pad>
@@ -44,7 +32,10 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MultiItemStartupConfigurations />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint enabled="false" file="/Users/Pavankumarn/Documents/projects/STOCKWEBAPI/STOCKWEBAPI/Controllers/Users/UsersController.cs" relfile="STOCKWEBAPI/Controllers/Users/UsersController.cs" line="29" column="1" />
+      <Breakpoint file="/Users/Pavankumarn/Documents/projects/STOCKWEBAPI/STOCKWEBAPI/Controllers/Login/LoginController.cs" relfile="STOCKWEBAPI/Controllers/Login/LoginController.cs" line="26" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
 </Properties>

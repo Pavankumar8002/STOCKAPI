@@ -17,66 +17,16 @@ namespace STOCKWEBAPI.Repository.Users
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
-        //public async Task<dynamic> SaveUsers(UsersRequestClass request)
-        //{
-        //    await using var connection = new NpgsqlConnection(_connectionString);
-        //    await connection.OpenAsync();
-
-        //    await using var command = new NpgsqlCommand("SELECT * FROM insert_user(@p_username, @p_password);", connection);
-        //    command.CommandTimeout = 30; // in seconds
-        //    command.Parameters.AddWithValue("p_username", request.Username);
-        //    command.Parameters.AddWithValue("p_password", request.Password);
-
-        //    await using var reader = await command.ExecuteReaderAsync();
-
-        //    if (await reader.ReadAsync())
-        //    {
-        //        return new
-        //        {
-        //            status = reader.GetInt32(0),
-        //            message = reader.GetString(1)
-        //        };
-        //    }
-
-        //    return new { status = -1, message = "Unexpected error." };
-        //}
-
-        //public async Task<dynamic> SaveUsers(UsersRequestClass request)
-        //{
-        //    await using var connection = new NpgsqlConnection(_connectionString);
-        //    await connection.OpenAsync(); // ensure connection is ready
-
-        //    var query = "SELECT * FROM insert_user(@p_username, @p_password);";
-
-        //    using var command = new NpgsqlCommand(query, connection); // no await needed
-        //    command.Parameters.AddWithValue("p_username", request.Username);
-        //    command.Parameters.AddWithValue("p_password", request.Password);
-        //    command.CommandTimeout = 30; // optional
-
-        //    await using var reader = await command.ExecuteReaderAsync();
-
-        //    if (await reader.ReadAsync())
-        //    {
-        //        return new
-        //        {
-        //            status = reader.GetInt32(0),
-        //            message = reader.GetString(1)
-        //        };
-        //    }
-
-        //    return new { status = -1, message = "Unexpected error." };
-        //}
         public async Task<dynamic> SaveUsers(UsersRequestClass request)
         {
             await using var connection = new NpgsqlConnection(_connectionString);
-            await connection.OpenAsync(); // ensure connection is ready
+            await connection.OpenAsync();
 
-            var query = "SELECT * FROM insert_user(@p_username, @p_password);";
+            var query = "SELECT * FROM public.insert_user(@p_username, @p_password);";
 
-            using var command = new NpgsqlCommand(query, connection); // no await needed
+            using var command = new NpgsqlCommand(query, connection); 
             command.Parameters.AddWithValue("p_username", request.Username);
             command.Parameters.AddWithValue("p_password", request.Password);
-            command.CommandTimeout = 30; // optional
 
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 

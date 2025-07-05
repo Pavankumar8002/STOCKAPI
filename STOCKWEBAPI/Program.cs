@@ -91,6 +91,11 @@ app.UseSwaggerUI(options =>
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "Stock API V1");
     options.RoutePrefix = string.Empty;
 });
+app.MapGet("/", context =>
+{
+    context.Response.Redirect("/swagger");
+    return Task.CompletedTask;
+});
 
 // Standard Middleware
 if (!app.Environment.IsDevelopment())
@@ -102,7 +107,7 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 app.UseRouting();
 
-app.UseAuthentication(); // must be before UseAuthorization
+app.UseAuthentication(); 
 app.UseAuthorization();
 
 app.MapControllerRoute(

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Npgsql;
 using Microsoft.Extensions.Configuration;
 using STOCKWEBAPI.RepositoryInterface.Login;
+using System.Dynamic;
 
 namespace STOCKWEBAPI.Repository.Login
 {
@@ -16,32 +17,39 @@ namespace STOCKWEBAPI.Repository.Login
         }
 
         public async Task<dynamic> ValidateUser(string username, string password)
-        {
-            try
             {
-                await using var connection = new NpgsqlConnection(_connectionString);
-                await connection.OpenAsync();
-
-                var query = "SELECT row_to_json(t) FROM get_users(@id_input, @passcode_input) AS t;";
-                await using var command = new NpgsqlCommand(query, connection);
-                command.Parameters.AddWithValue("id_input", username);
-                command.Parameters.AddWithValue("passcode_input", password);
-               
-
-                await using var reader = await command.ExecuteReaderAsync();
-
-                if (await reader.ReadAsync())
+                try
                 {
-                    string jsonResult = reader.GetString(0); 
-                    return jsonResult;
-                }
+                    await using var connection = new NpgsqlConnection(_connectionString);
+                    await connection.OpenAsync();
 
-                return "{\"status\": -1, \"message\": \"No data returned.\"}";
-            }
-            catch (Exception ex)
-            {
-                return $"{{\"status\": -1, \"message\": \"Error: {ex.Message}\"}}";
-            }
+                    var query = "SELECT * FROM public.validate_user(@id_input, @passcode_input);";
+                    await using var command = new NpgsqlCommand(query, connection);
+                    command.Parameters.AddWithValue("id_input", username);
+                    command.Parameters.AddWithValue("passcode_input", password);
+
+                    await using var reader = await command.ExecuteReaderAsync();
+
+                    if (await reader.ReadAsync())
+                    {
+                        dynamic result = new ExpandoObject();
+                        result.status = reader.GetInt32(0);
+                        result.message = reader.GetString(1);
+                        return result;
+                    }
+
+                    dynamic noData = new ExpandoObject();
+                    noData.status = -1;
+                    noData.message = "No data returned.";
+                    return noData;
+                }
+                catch (Exception ex)
+                {
+                    dynamic error = new ExpandoObject();
+                    error.status = -1;
+                    error.message = $"Error: {ex.Message}";
+                    return error;
+                }
         }
 
     }
