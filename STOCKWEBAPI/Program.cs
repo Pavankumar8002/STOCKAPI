@@ -15,14 +15,17 @@ using STOCKWEBAPI.RepositoryInterface.Users;
 using STOCKWEBAPI.Service.Users;
 using STOCKWEBAPI.ServiceInterface.Users;
 using STOCKWEBAPI.Helpers;
+using STOCKWEBAPI.RepositoryInterface.RootStackx;
+using STOCKWEBAPI.Repository.RootStackx;
+using STOCKWEBAPI.ServiceInterface.RootStackx;
+using STOCKWEBAPI.Service.RootStackx;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Controllers and Swagger
+// Controllers & Swagger
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 
-// Swagger with JWT Auth Support
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Stock API", Version = "v1" });
@@ -53,7 +56,19 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// JWT Authentication
+// ✅ CORS Policy — for React Frontend
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+// ✅ JWT Authentication
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
@@ -63,53 +78,59 @@ builder.Services.AddAuthentication("Bearer")
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = "STOCKWEBAPI",             // MUST match
+            ValidIssuer = "STOCKWEBAPI",
             ValidAudience = "STOCKWEBAPI_CLIENT",
-            IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String("Vfdz0zTcW1qqIt9UgyEu+LdJ4HEavPKBzBkw9wwHjZo=")),
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Convert.FromBase64String("Vfdz0zTcW1qqIt9UgyEu+LdJ4HEavPKBzBkw9wwHjZo=")),
             ClockSkew = TimeSpan.Zero
         };
     });
 
-
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<JwtTokenGenerator>();
-
-
 
 // Dependency Injection
 builder.Services.AddScoped<ILoginRepo, LoginRepo>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IUsersRepo, UsersRepo>();
+builder.Services.AddScoped<IEnqueryRepo, EnqueryRepo>();
+builder.Services.AddScoped<IEnqueryService, EnqueryService>();
 
 var app = builder.Build();
 
-// Swagger UI
-app.UseSwagger();
-app.UseSwaggerUI(options =>
+// Swagger
+if (app.Environment.IsDevelopment())
 {
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Stock API V1");
-    options.RoutePrefix = string.Empty;
-});
-app.MapGet("/", context =>
-{
-    context.Response.Redirect("/swagger");
-    return Task.CompletedTask;
-});
-
-// Standard Middleware
-if (!app.Environment.IsDevelopment())
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Stock API V1");
+        options.RoutePrefix = string.Empty;
+    });
+    app.MapGet("/", context =>
+    {
+        context.Response.Redirect("/swagger");
+        return Task.CompletedTask;
+    });
+}
+else
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
+// ✅ Middleware Order is Important
 app.UseStaticFiles();
 app.UseRouting();
 
-app.UseAuthentication(); 
+// ✅ CORS must come BEFORE auth
+app.UseCors("AllowAll");
+
+app.UseAuthentication();
 app.UseAuthorization();
 
+// MVC Controller Routing
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

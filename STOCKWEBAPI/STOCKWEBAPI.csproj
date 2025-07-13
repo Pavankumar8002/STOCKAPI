@@ -32,6 +32,12 @@
     <None Remove="ServiceInterface\Users\" />
     <None Remove="DataEntities\Users\" />
     <None Remove="Helpers\" />
+    <None Remove="Controllers\RootStackx\" />
+    <None Remove="DataEntities\RootStackx\" />
+    <None Remove="Repository\RootStackx\" />
+    <None Remove="RepositoryInterface\RootStackx\" />
+    <None Remove="Service\RootStackx\" />
+    <None Remove="ServiceInterface\RootStackx\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Repository\" />
@@ -52,5 +58,11 @@
     <Folder Include="ServiceInterface\Users\" />
     <Folder Include="DataEntities\Users\" />
     <Folder Include="Helpers\" />
+    <Folder Include="Controllers\RootStackx\" />
+    <Folder Include="DataEntities\RootStackx\" />
+    <Folder Include="Repository\RootStackx\" />
+    <Folder Include="RepositoryInterface\RootStackx\" />
+    <Folder Include="Service\RootStackx\" />
+    <Folder Include="ServiceInterface\RootStackx\" />
   </ItemGroup>
 </Project>
