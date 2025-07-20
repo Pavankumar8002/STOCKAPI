@@ -96,6 +96,8 @@ builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IUsersRepo, UsersRepo>();
 builder.Services.AddScoped<IEnqueryRepo, EnqueryRepo>();
 builder.Services.AddScoped<IEnqueryService, EnqueryService>();
+builder.Services.AddScoped<IEnquiryDetailsRepo, EnquiryDetailsRepo>();
+builder.Services.AddScoped<IEnquiryDetailsService, EnquiryDetailsService>();
 
 var app = builder.Build();
 
