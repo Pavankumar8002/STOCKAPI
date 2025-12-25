@@ -19,6 +19,10 @@ using STOCKWEBAPI.RepositoryInterface.RootStackx;
 using STOCKWEBAPI.Repository.RootStackx;
 using STOCKWEBAPI.ServiceInterface.RootStackx;
 using STOCKWEBAPI.Service.RootStackx;
+using STOCKWEBAPI.RepositoryInterface.Portfolio;
+using STOCKWEBAPI.Repository.Portfolio;
+using STOCKWEBAPI.ServiceInterface.Portfolio;
+using STOCKWEBAPI.Service.Portfolio;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -90,15 +94,28 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<JwtTokenGenerator>();
 
 // Dependency Injection
+#region login
 builder.Services.AddScoped<ILoginRepo, LoginRepo>();
 builder.Services.AddScoped<ILoginService, LoginService>();
+#endregion
+#region logindetails
+builder.Services.AddScoped<ILoginRepo, LoginRepo>();
+builder.Services.AddScoped<ILoginService, LoginService>();
+#endregion
+#region users
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IUsersRepo, UsersRepo>();
+#endregion
+#region enquery Rootstackx
 builder.Services.AddScoped<IEnqueryRepo, EnqueryRepo>();
 builder.Services.AddScoped<IEnqueryService, EnqueryService>();
 builder.Services.AddScoped<IEnquiryDetailsRepo, EnquiryDetailsRepo>();
 builder.Services.AddScoped<IEnquiryDetailsService, EnquiryDetailsService>();
-
+#endregion
+#region Portfolio Enquery
+builder.Services.AddScoped<IPortfolioEnqueryRepo, PortfolioEnqueryRepo>();
+builder.Services.AddScoped<IPortfolioEnqueryService, PortfolioEnqueryService>();
+#endregion
 var app = builder.Build();
 
 // Swagger

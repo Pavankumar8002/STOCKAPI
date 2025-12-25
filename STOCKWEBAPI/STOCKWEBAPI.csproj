@@ -38,6 +38,12 @@
     <None Remove="RepositoryInterface\RootStackx\" />
     <None Remove="Service\RootStackx\" />
     <None Remove="ServiceInterface\RootStackx\" />
+    <None Remove="Controllers\Portfolio\" />
+    <None Remove="DataEntities\Portfolio\" />
+    <None Remove="Repository\Portfolio\" />
+    <None Remove="RepositoryInterface\Portfolio\" />
+    <None Remove="Service\Portfolio\" />
+    <None Remove="ServiceInterface\Portfolio\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Repository\" />
@@ -64,5 +70,11 @@
     <Folder Include="RepositoryInterface\RootStackx\" />
     <Folder Include="Service\RootStackx\" />
     <Folder Include="ServiceInterface\RootStackx\" />
+    <Folder Include="Controllers\Portfolio\" />
+    <Folder Include="DataEntities\Portfolio\" />
+    <Folder Include="Repository\Portfolio\" />
+    <Folder Include="RepositoryInterface\Portfolio\" />
+    <Folder Include="Service\Portfolio\" />
+    <Folder Include="ServiceInterface\Portfolio\" />
   </ItemGroup>
 </Project>
