@@ -1,38 +1,71 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
-using STOCKWEBAPI.RepositoryInterface.Login;
-using STOCKWEBAPI.Repository.Login;
-using STOCKWEBAPI.ServiceInterface.Login;
-using STOCKWEBAPI.Service.Login;
-using STOCKWEBAPI.Repository.Users;
-using STOCKWEBAPI.RepositoryInterface.Users;
-using STOCKWEBAPI.Service.Users;
-using STOCKWEBAPI.ServiceInterface.Users;
 using STOCKWEBAPI.Helpers;
-using STOCKWEBAPI.RepositoryInterface.RootStackx;
+
+using STOCKWEBAPI.Repository.Login;
+using STOCKWEBAPI.Repository.Users;
 using STOCKWEBAPI.Repository.RootStackx;
-using STOCKWEBAPI.ServiceInterface.RootStackx;
-using STOCKWEBAPI.Service.RootStackx;
-using STOCKWEBAPI.RepositoryInterface.Portfolio;
 using STOCKWEBAPI.Repository.Portfolio;
-using STOCKWEBAPI.ServiceInterface.Portfolio;
+
+using STOCKWEBAPI.RepositoryInterface.Login;
+using STOCKWEBAPI.RepositoryInterface.Users;
+using STOCKWEBAPI.RepositoryInterface.RootStackx;
+using STOCKWEBAPI.RepositoryInterface.Portfolio;
+
+using STOCKWEBAPI.Service.Login;
+using STOCKWEBAPI.Service.Users;
+using STOCKWEBAPI.Service.RootStackx;
 using STOCKWEBAPI.Service.Portfolio;
 
-var builder = WebApplication.CreateBuilder(args);
+using STOCKWEBAPI.ServiceInterface.Login;
+using STOCKWEBAPI.ServiceInterface.Users;
+using STOCKWEBAPI.ServiceInterface.RootStackx;
+using STOCKWEBAPI.ServiceInterface.Portfolio;
 
-// Controllers & Swagger
-builder.Services.AddControllersWithViews();
+// =======================================================
+// BUILDER (File Watchers DISABLED for Linux Hosting)
+// =======================================================
+
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    Args = args,
+    ContentRootPath = Directory.GetCurrentDirectory()
+});
+
+// ❌ Remove default config watchers
+builder.Configuration.Sources.Clear();
+
+// ✅ Load configs WITHOUT reloadOnChange
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+    .AddJsonFile(
+        $"appsettings.{builder.Environment.EnvironmentName}.json",
+        optional: true,
+        reloadOnChange: false
+    )
+    .AddEnvironmentVariables();
+
+// =======================================================
+// SERVICES
+// =======================================================
+
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
+// -------------------- Swagger --------------------
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Stock API", Version = "v1" });
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Stock API",
+        Version = "v1"
+    });
 
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -41,7 +74,7 @@ builder.Services.AddSwaggerGen(options =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Enter 'Bearer {your JWT token}'"
+        Description = "Enter: Bearer {your JWT token}"
     });
 
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -60,7 +93,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// ✅ CORS Policy — for React Frontend
+// -------------------- CORS --------------------
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -72,9 +105,13 @@ builder.Services.AddCors(options =>
     });
 });
 
-// ✅ JWT Authentication
-builder.Services.AddAuthentication("Bearer")
-    .AddJwtBearer("Bearer", options =>
+// -------------------- JWT --------------------
+var jwtKey = builder.Configuration["JWT_KEY"]
+    ?? "Vfdz0zTcW1qqIt9UgyEu+LdJ4HEavPKBzBkw9wwHjZo="; // fallback (move to env in prod)
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -85,7 +122,7 @@ builder.Services.AddAuthentication("Bearer")
             ValidIssuer = "STOCKWEBAPI",
             ValidAudience = "STOCKWEBAPI_CLIENT",
             IssuerSigningKey = new SymmetricSecurityKey(
-                Convert.FromBase64String("Vfdz0zTcW1qqIt9UgyEu+LdJ4HEavPKBzBkw9wwHjZo=")),
+                Convert.FromBase64String(jwtKey)),
             ClockSkew = TimeSpan.Zero
         };
     });
@@ -93,75 +130,69 @@ builder.Services.AddAuthentication("Bearer")
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<JwtTokenGenerator>();
 
-// Dependency Injection
-#region login
+// =======================================================
+// DEPENDENCY INJECTION
+// =======================================================
+
+// Login
 builder.Services.AddScoped<ILoginRepo, LoginRepo>();
 builder.Services.AddScoped<ILoginService, LoginService>();
-#endregion
-#region logindetails
-builder.Services.AddScoped<ILoginRepo, LoginRepo>();
-builder.Services.AddScoped<ILoginService, LoginService>();
-#endregion
-#region users
-builder.Services.AddScoped<IUsersService, UsersService>();
+
+// Users
 builder.Services.AddScoped<IUsersRepo, UsersRepo>();
-#endregion
-#region enquery Rootstackx
+builder.Services.AddScoped<IUsersService, UsersService>();
+
+// RootStackx Enquiry
 builder.Services.AddScoped<IEnqueryRepo, EnqueryRepo>();
 builder.Services.AddScoped<IEnqueryService, EnqueryService>();
 builder.Services.AddScoped<IEnquiryDetailsRepo, EnquiryDetailsRepo>();
 builder.Services.AddScoped<IEnquiryDetailsService, EnquiryDetailsService>();
-#endregion
-#region Portfolio Enquery
+
+// Portfolio Enquiry
 builder.Services.AddScoped<IPortfolioEnqueryRepo, PortfolioEnqueryRepo>();
 builder.Services.AddScoped<IPortfolioEnqueryService, PortfolioEnqueryService>();
-#endregion
+
+// =======================================================
+// APP
+// =======================================================
+
 var app = builder.Build();
 
-// Swagger
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Stock API V1");
-        options.RoutePrefix = string.Empty;
-    });
-    app.MapGet("/", context =>
-    {
-        context.Response.Redirect("/swagger");
-        return Task.CompletedTask;
-    });
-}
-else
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
-
+// -------------------- Error Handling --------------------
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
     {
         context.Response.StatusCode = 500;
         context.Response.ContentType = "application/json";
-        await context.Response.WriteAsync("{\"error\": \"An unexpected error occurred.\"}");
+        await context.Response.WriteAsync(
+            "{\"error\":\"An unexpected error occurred.\"}");
     });
 });
 
-// ✅ Middleware Order is Important
+// -------------------- Swagger --------------------
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Stock API V1");
+        c.RoutePrefix = string.Empty;
+    });
+}
+
+// -------------------- Middleware Order --------------------
+app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
 
-// ✅ CORS must come BEFORE auth
 app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-// MVC Controller Routing
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+// -------------------- Routing --------------------
+app.MapControllers();
 
 app.Run();
