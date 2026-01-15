@@ -140,7 +140,7 @@ namespace STOCKWEBAPI.Repository.Portfolio
     public class MailResult
     {
         public bool Success { get; private set; }
-        public string ErrorMessage { get; private set; }
+        public string? ErrorMessage { get; private set; }
 
         public static MailResult SuccessResult()
             => new MailResult { Success = true };
