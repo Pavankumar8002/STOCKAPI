@@ -1,59 +1,41 @@
 ﻿<Properties GitUserInfo="UsingGIT" StartupConfiguration="{D3938C1C-E9AF-4979-9D22-5DEFE59FBB27}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="STOCKWEBAPI/appsettings.Development.json">
+  <MonoDevelop.Ide.Workbench ActiveDocument="STOCKWEBAPI/appsettings.json">
     <Files>
-      <File FileName="STOCKWEBAPI/Controllers/RootStackx/EnquiryDetailsController.cs" Line="1" Column="1" />
+      <File FileName="STOCKWEBAPI/Controllers/RootStackx/EnquiryDetailsController.cs" />
       <File FileName="STOCKWEBAPI/Repository/RootStackx/EnquiryDetailsRepo.cs" />
       <File FileName="STOCKWEBAPI/RepositoryInterface/RootStackx/IEnquiryDetailsRepo.cs" />
       <File FileName="STOCKWEBAPI/Service/RootStackx/EnquiryDetailsService.cs" />
       <File FileName="STOCKWEBAPI/ServiceInterface/RootStackx/IEnquiryDetailsService.cs" />
       <File FileName="STOCKWEBAPI/Repository/RootStackx/EnqueryRepo.cs" />
       <File FileName="STOCKWEBAPI/Repository/Users/UsersRepo.cs" />
-      <File FileName="STOCKWEBAPI/Program.cs" Line="198" Column="1" />
+      <File FileName="STOCKWEBAPI/Program.cs" />
       <File FileName="STOCKWEBAPI/Controllers/HomeController.cs" />
-      <File FileName="STOCKWEBAPI/Controllers/RootStackx/EnqueryController.cs" Line="1" Column="1" />
+      <File FileName="STOCKWEBAPI/Controllers/RootStackx/EnqueryController.cs" />
       <File FileName="STOCKWEBAPI/Controllers/Users/UsersController.cs" />
-      <File FileName="STOCKWEBAPI/Controllers/Login/LoginController.cs" Line="1" Column="1" />
+      <File FileName="STOCKWEBAPI/Controllers/Login/LoginController.cs" />
       <File FileName="STOCKWEBAPI/DataEntities/RootStackx/EnqueryRequest.cs" />
       <File FileName="STOCKWEBAPI/Helpers/JwtTokenGenerator.cs" />
-      <File FileName="STOCKWEBAPI/appsettings.json" Line="30" Column="31" />
-      <File FileName="STOCKWEBAPI/DataEntities/Portfolio/PortfolioEnqueryRequest.cs" Line="1" Column="1" />
-      <File FileName="STOCKWEBAPI/RepositoryInterface/Portfolio/IPortfolioEnqueryRepo.cs" Line="9" Column="23" />
-      <File FileName="STOCKWEBAPI/Service/Portfolio/PortfolioEnqueryService.cs" Line="22" Column="1" />
+      <File FileName="STOCKWEBAPI/appsettings.json" Line="23" Column="1" />
+      <File FileName="STOCKWEBAPI/DataEntities/Portfolio/PortfolioEnqueryRequest.cs" />
+      <File FileName="STOCKWEBAPI/RepositoryInterface/Portfolio/IPortfolioEnqueryRepo.cs" />
+      <File FileName="STOCKWEBAPI/Service/Portfolio/PortfolioEnqueryService.cs" />
       <File FileName="STOCKWEBAPI/ServiceInterface/Portfolio/IPortfolioEnqueryService.cs" />
       <File FileName="STOCKWEBAPI/ServiceInterface/RootStackx/IEnqueryService.cs" />
       <File FileName="STOCKWEBAPI/Service/RootStackx/EnqueryService.cs" />
-      <File FileName="STOCKWEBAPI/RepositoryInterface/RootStackx/IEnqueryRepo.cs" Line="1" Column="1" />
-      <File FileName="STOCKWEBAPI/Controllers/Portfolio/PortfolioEnqueryController.cs" Line="26" Column="1" />
+      <File FileName="STOCKWEBAPI/RepositoryInterface/RootStackx/IEnqueryRepo.cs" />
+      <File FileName="STOCKWEBAPI/Controllers/Portfolio/PortfolioEnqueryController.cs" />
       <File FileName="STOCKWEBAPI/Repository/Login/LoginRepo.cs" />
       <File FileName=".vs/STOCKWEBAPI/xs/UserPrefs.xml" Line="1" Column="1" />
-      <File FileName="STOCKWEBAPI/appsettings.Development.json" Line="8" Column="1" />
-      <File FileName="STOCKWEBAPI/Repository/Portfolio/PortfolioEnqueryRepo.cs" Line="22" Column="1" />
+      <File FileName="STOCKWEBAPI/appsettings.Development.json" Line="7" Column="1" />
+      <File FileName="STOCKWEBAPI/Repository/Portfolio/PortfolioEnqueryRepo.cs" Line="152" Column="1" />
+      <File FileName="STOCKWEBAPI/docker" Line="28" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
-          <Node name="STOCKWEBAPI">
+          <Node name="STOCKWEBAPI" expanded="True">
             <Node name="STOCKWEBAPI" expanded="True">
-              <Node name="Controllers" expanded="True">
-                <Node name="Login" expanded="True" />
-                <Node name="Portfolio" expanded="True" />
-              </Node>
-              <Node name="DataEntities" expanded="True">
-                <Node name="Portfolio" expanded="True" />
-              </Node>
-              <Node name="Repository" expanded="True">
-                <Node name="Portfolio" expanded="True" />
-              </Node>
-              <Node name="RepositoryInterface" expanded="True">
-                <Node name="Portfolio" expanded="True" />
-                <Node name="RootStackx" expanded="True" />
-              </Node>
-              <Node name="Service" expanded="True">
-                <Node name="Portfolio" expanded="True" />
-              </Node>
-              <Node name="appsettings.json" expanded="True">
-                <Node name="appsettings.Development.json" selected="True" />
-              </Node>
+              <Node name="appsettings.json" expanded="True" />
             </Node>
           </Node>
         </State>

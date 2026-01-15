@@ -1,0 +1,27 @@
+# =========================
+# Build Stage
+# =========================
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+WORKDIR /src
+
+COPY STOCKWEBAPI/STOCKWEBAPI.csproj STOCKWEBAPI/
+RUN dotnet restore STOCKWEBAPI/STOCKWEBAPI.csproj
+
+COPY . .
+WORKDIR /src/STOCKWEBAPI
+RUN dotnet publish -c Release -o /app/publish
+
+# =========================
+# Runtime Stage
+# =========================
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
+WORKDIR /app
+
+# Copy EVERYTHING including appsettings*.json
+COPY --from=build /app/publish .
+
+# Explicitly set environment
+ENV ASPNETCORE_ENVIRONMENT=Production
+
+EXPOSE 80
+ENTRYPOINT ["dotnet", "STOCKWEBAPI.dll"]
