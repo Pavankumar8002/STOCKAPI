@@ -17,19 +17,17 @@ namespace STOCKWEBAPI.Repository.Portfolio
 
         public PortfolioEnqueryRepo(IConfiguration configuration)
         {
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            _connectionString = configuration.GetConnectionString("DefaultConnection")
-                ?? throw new InvalidOperationException("DefaultConnection string is missing in appsettings.json");
+            _configuration = configuration;
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
         public async Task<dynamic> SavePortfolioEnquiry(PortfolioEnqueryRequest request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
-
             await using var connection = new NpgsqlConnection(_connectionString);
             await connection.OpenAsync();
 
-            var query = "SELECT * FROM public.set_portfolio_enqueries(@name, @email, @in_message);";
+            const string query =
+                "SELECT * FROM public.set_portfolio_enqueries(@name, @email, @in_message);";
 
             await using var command = new NpgsqlCommand(query, connection);
             command.Parameters.AddWithValue("name", request.Name);
@@ -39,104 +37,158 @@ namespace STOCKWEBAPI.Repository.Portfolio
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             await using var reader = await command.ExecuteReaderAsync(cts.Token);
 
-            if (await reader.ReadAsync(cts.Token))
+            if (!await reader.ReadAsync(cts.Token))
             {
-                int status = reader.GetInt32(0);
-                string message = reader.GetString(1);
-
-                // Only attempt email if DB insert succeeded
-                if (status == 1)
-                {
-                    try
-                    {
-                        await SendMailAsync(request);
-                    }
-                    catch
-                    {
-                        // Do not throw; just modify the response
-                        status = 0;
-                        message = "Enquiry saved, but email sending failed.";
-                    }
-                }
-
                 return new
                 {
-                    status,
-                    message
+                    status = -1,
+                    message = "Unexpected error while saving enquiry."
                 };
             }
 
-            // Unexpected DB failure
+            int status = reader.GetInt32(0);
+            string message = reader.GetString(1);
+
+            // Send email only if DB insert was successful
+            if (status == 1)
+            {
+                var mailResult = await SendMailAsync(
+                    request.Name,
+                    request.Email,
+                    request.Message
+                );
+
+                if (!mailResult.Success)
+                {
+                    return new
+                    {
+                        status = 0,
+                        message = "Enquiry saved, but email sending failed."
+                    };
+                }
+            }
+
             return new
             {
-                status = -1,
-                message = "Unexpected error."
+                status,
+                message
             };
         }
 
-        private async Task SendMailAsync(PortfolioEnqueryRequest request)
+        private async Task<MailResult> SendMailAsync(string name, string email, string message)
         {
-            var host = _configuration["SmtpSettings:Host"] ?? throw new InvalidOperationException("SMTP Host missing");
-            var portString = _configuration["SmtpSettings:Port"];
-            var sslString = _configuration["SmtpSettings:EnableSsl"];
-            var username = _configuration["SmtpSettings:Username"] ?? throw new InvalidOperationException("SMTP Username missing");
-            var password = _configuration["SmtpSettings:Password"] ?? throw new InvalidOperationException("SMTP Password missing");
-            var fromEmail = _configuration["SmtpSettings:FromEmail"] ?? throw new InvalidOperationException("SMTP FromEmail missing");
-            var fromName = _configuration["SmtpSettings:FromName"] ?? "Rootstackx";
+            string host = "smtp.gmail.com";
+            int port = 587;
+            bool enableSsl = true;
+            string username = "pavankumarpk8002@gmail.com";
+            string password = "dyfy hilf gwhh gzhf";
+            string fromEmail = "pavankumarpk8002@gmail.com";
+            string fromName = "Pavan Kumar N";
 
-            if (!int.TryParse(portString, out var port))
-                throw new InvalidOperationException("SMTP Port is invalid");
-
-            if (!bool.TryParse(sslString, out var enableSsl))
-                throw new InvalidOperationException("SMTP EnableSsl value is invalid");
-
-            using var client = new SmtpClient(host, port)
+            try
             {
-                Credentials = new NetworkCredential(username, password),
-                EnableSsl = enableSsl
-            };
+                using var client = new SmtpClient(host, port)
+                {
+                    Credentials = new NetworkCredential(username, password),
+                    EnableSsl = enableSsl
+                };
 
-            // ====== Admin Email ======
-            using var adminMail = new MailMessage
-            {
-                From = new MailAddress(fromEmail, fromName),
-                Subject = "New Portfolio Enquiry – Rootstackx",
-                Body = $@"
-                    <h3>New Portfolio Enquiry</h3>
-                    <p><b>Name:</b> {request.Name}</p>
-                    <p><b>Email:</b> {request.Email}</p>
-                    <p><b>Message:</b><br/>{request.Message}</p>
-                ",
-                IsBodyHtml = true
-            };
-            adminMail.To.Add(fromEmail);
-            await client.SendMailAsync(adminMail);
+                // ================= ADMIN EMAIL =================
+                using var adminMail = new MailMessage
+                {
+                    From = new MailAddress(fromEmail, fromName),
+                    Subject = "New Portfolio Enquiry – Rootstackx",
+                    Body = $@"
+                        <h3>New Portfolio Enquiry</h3>
+                        <p><b>Name:</b> {name}</p>
+                        <p><b>Email:</b> {email}</p>
+                        <p><b>Message:</b><br/>{message}</p>",
+                    IsBodyHtml = true
+                };
 
-            // ====== Thank You Email ======
-            using var thankYouMail = new MailMessage
+                adminMail.To.Add(fromEmail);
+                await client.SendMailAsync(adminMail);
+
+                // ================= THANK YOU EMAIL =================
+                using var thankYouMail = new MailMessage
+                {
+                    From = new MailAddress(fromEmail, fromName),
+                    Subject = "Thank you for contacting Pavan's portfolio",
+                    Body = $@"
+                        <div style='
+                            max-width:600px;
+                            margin:20px auto;
+                            padding:30px 40px;
+                            background:#fdf6e3;
+                            border:2px solid #d4c4a8;
+                            border-radius:8px;
+                            box-shadow:0 8px 20px rgba(0,0,0,0.15);
+                            font-family:Georgia, ""Times New Roman"", serif;
+                            color:#3e2f1c;
+                        '>
+
+                            <div style='
+                                border-left:6px solid #c2a76d;
+                                padding-left:20px;
+                            '>
+                                <p style='font-size:16px;'>Greetings <b>{name}</b>,</p>
+
+                                <p style='font-size:15px; line-height:1.7;'>
+                                    I sincerely appreciate you taking the time to visit my portfolio and
+                                    share your thoughts with me.
+                                </p>
+
+                                <p style='font-size:15px; line-height:1.7;'>
+                                    Your message has been safely received, and I shall review it with care.
+                                    You may expect a response from me shortly.
+                                </p>
+
+                                <p style='font-size:15px; line-height:1.7;'>
+                                    Until then, thank you once again for your interest and trust.
+                                </p>
+                            </div>
+
+                            <hr style='
+                                border:none;
+                                border-top:1px dashed #c2a76d;
+                                margin:25px 0;
+                            ' />
+
+                            <p style='font-size:14px;'>
+                                With warm regards,<br/>
+                                <b style='font-size:16px;'>Pavan Kumar N</b><br/>
+                                <span style='font-size:13px;'>Software Developer</span>
+                            </p>
+
+                        </div>
+                        ",
+
+                    IsBodyHtml = true
+                };
+
+                thankYouMail.To.Add(email);
+                await client.SendMailAsync(thankYouMail);
+
+                return MailResult.SuccessResult();
+            }
+            catch (Exception ex)
             {
-                From = new MailAddress(fromEmail, fromName),
-                Subject = "Thank you for contacting Pavan's portfolio",
-                Body = $@"
-                    <div style='
-                        max-width:600px;
-                        margin:20px auto;
-                        padding:30px 40px;
-                        background:#fdf6e3;
-                        border:2px solid #d4c4a8;
-                        border-radius:8px;
-                        font-family:Georgia, ""Times New Roman"", serif;
-                        color:#3e2f1c;
-                    '>
-                        <p style='font-size:16px;'>Greetings <b>{request.Name}</b>,</p>
-                        <p>Your message has been received. I will review it and respond shortly.</p>
-                        <p>Thank you for your interest!</p>
-                        <p>With warm regards,<br/><b>Pavan Kumar N</b></p>
-                    </div>",
-                IsBodyHtml = true
-            };
-            thankYouMail.To.Add(request.Email);
-            await client.SendMailAsync(thankYouMail);
+                // You can log ex here using ILogger or Serilog
+                return MailResult.FailureResult(ex.Message);
+            }
         }
+    }
+
+    // ================= HELPER CLASS =================
+    public class MailResult
+    {
+        public bool Success { get; private set; }
+        public string? ErrorMessage { get; private set; }
+
+        public static MailResult SuccessResult()
+            => new MailResult { Success = true };
+
+        public static MailResult FailureResult(string error)
+            => new MailResult { Success = false, ErrorMessage = error };
     }
 }
