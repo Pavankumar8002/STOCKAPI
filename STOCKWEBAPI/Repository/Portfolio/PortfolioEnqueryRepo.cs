@@ -15,6 +15,14 @@ namespace STOCKWEBAPI.Repository.Portfolio
         private readonly string _connectionString;
         private readonly IConfiguration _configuration;
 
+        string host = "smtp.gmail.com";
+        int port = 587;
+        bool enableSsl = true;
+        string username = "pavankumarpk8002@gmail.com";
+        string password = "dyfy hilf gwhh gzhf";
+        string fromEmail = "pavankumarpk8002@gmail.com";
+        string fromName = "Pavan Kumar N";
+
         public PortfolioEnqueryRepo(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -77,13 +85,6 @@ namespace STOCKWEBAPI.Repository.Portfolio
 
         private async Task<MailResult> SendMailAsync(string name, string email, string message)
         {
-            string host = "smtp.gmail.com";
-            int port = 587;
-            bool enableSsl = true;
-            string username = "pavankumarpk8002@gmail.com";
-            string password = "dyfy hilf gwhh gzhf";
-            string fromEmail = "pavankumarpk8002@gmail.com";
-            string fromName = "Pavan Kumar N";
 
             try
             {
