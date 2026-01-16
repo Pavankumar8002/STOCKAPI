@@ -19,9 +19,9 @@ namespace STOCKWEBAPI.Repository.Portfolio
         int port = 587;
         bool enableSsl = true;
         string username = "pavankumarpk8002@gmail.com";
-        string password = "dyfy hilf gwhh gzhf";
+        string password = "dyfyhilfgwhhgzhf";
         string fromEmail = "pavankumarpk8002@gmail.com";
-        string fromName = "Pavan Kumar N";
+        string fromName = "PavanKumarN";
 
         public PortfolioEnqueryRepo(IConfiguration configuration)
         {
