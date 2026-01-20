@@ -1,6 +1,8 @@
 ﻿using System;
-using System.Net;
-using System.Net.Mail;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -13,20 +15,23 @@ namespace STOCKWEBAPI.Repository.Portfolio
     public class PortfolioEnqueryRepo : IPortfolioEnqueryRepo
     {
         private readonly string _connectionString;
-        private readonly IConfiguration _configuration;
-
-        string host = "smtp.gmail.com";
-        int port = 587;
-        bool enableSsl = true;
-        string username = "pavankumarpk8002@gmail.com";
-        string password = "dyfyhilfgwhhgzhf";
-        string fromEmail = "pavankumarpk8002@gmail.com";
-        string fromName = "PavanKumarN";
+        private readonly string _resendApiKey;
+        private readonly string _fromEmail;
+        private readonly string _adminEmail;
 
         public PortfolioEnqueryRepo(IConfiguration configuration)
         {
-            _configuration = configuration;
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+            _connectionString = configuration.GetConnectionString("DefaultConnection")
+                ?? throw new Exception("DefaultConnection missing");
+
+            _resendApiKey = configuration["Resend:ApiKey"]
+                ?? throw new Exception("Resend ApiKey missing");
+
+            _fromEmail = configuration["Resend:FromEmail"]
+                ?? throw new Exception("FromEmail missing");
+
+            _adminEmail = configuration["Resend:AdminEmail"]
+                ?? throw new Exception("AdminEmail missing");
         }
 
         public async Task<dynamic> SavePortfolioEnquiry(PortfolioEnqueryRequest request)
@@ -57,7 +62,6 @@ namespace STOCKWEBAPI.Repository.Portfolio
             int status = reader.GetInt32(0);
             string message = reader.GetString(1);
 
-            // Send email only if DB insert was successful
             if (status == 1)
             {
                 var mailResult = await SendMailAsync(
@@ -83,104 +87,80 @@ namespace STOCKWEBAPI.Repository.Portfolio
             };
         }
 
+        // ================= EMAIL SENDER =================
         private async Task<MailResult> SendMailAsync(string name, string email, string message)
         {
-
             try
             {
-                using var client = new SmtpClient(host, port)
-                {
-                    Credentials = new NetworkCredential(username, password),
-                    EnableSsl = enableSsl
-                };
+                using var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", _resendApiKey);
 
-                // ================= ADMIN EMAIL =================
-                using var adminMail = new MailMessage
+                // -------- ADMIN EMAIL --------
+                var adminPayload = new
                 {
-                    From = new MailAddress(fromEmail, fromName),
-                    Subject = "New Portfolio Enquiry – Rootstackx",
-                    Body = $@"
+                    from = _fromEmail,
+                    to = new[] { _adminEmail },
+                    subject = "New Portfolio Enquiry – Rootstackx",
+                    html = $@"
                         <h3>New Portfolio Enquiry</h3>
                         <p><b>Name:</b> {name}</p>
                         <p><b>Email:</b> {email}</p>
-                        <p><b>Message:</b><br/>{message}</p>",
-                    IsBodyHtml = true
+                        <p><b>Message:</b><br/>{message}</p>"
                 };
 
-                adminMail.To.Add(fromEmail);
-                await client.SendMailAsync(adminMail);
+                await SendResendAsync(client, adminPayload);
 
-                // ================= THANK YOU EMAIL =================
-                using var thankYouMail = new MailMessage
-                {
-                    From = new MailAddress(fromEmail, fromName),
-                    Subject = "Thank you for contacting Pavan's portfolio",
-                    Body = $@"
-                        <div style='
-                            max-width:600px;
-                            margin:20px auto;
-                            padding:30px 40px;
-                            background:#fdf6e3;
-                            border:2px solid #d4c4a8;
-                            border-radius:8px;
-                            box-shadow:0 8px 20px rgba(0,0,0,0.15);
-                            font-family:Georgia, ""Times New Roman"", serif;
-                            color:#3e2f1c;
-                        '>
+                // -------- THANK YOU EMAIL --------
+                //var thankYouPayload = new
+                //{
+                //    from = _fromEmail,
+                //    to = new[] { email },
+                //    subject = "Thank you for contacting Pavan's Portfolio",
+                //    html = $@"
+                //        <p>Hi <b>{name}</b>,</p>
+                //        <p>
+                //            Thank you for reaching out.
+                //            I’ve received your message and will get back to you shortly.
+                //        </p>
+                //        <p>
+                //            Regards,<br/>
+                //            <b>Pavan Kumar N</b>
+                //        </p>"
+                //};
 
-                            <div style='
-                                border-left:6px solid #c2a76d;
-                                padding-left:20px;
-                            '>
-                                <p style='font-size:16px;'>Greetings <b>{name}</b>,</p>
-
-                                <p style='font-size:15px; line-height:1.7;'>
-                                    I sincerely appreciate you taking the time to visit my portfolio and
-                                    share your thoughts with me.
-                                </p>
-
-                                <p style='font-size:15px; line-height:1.7;'>
-                                    Your message has been safely received, and I shall review it with care.
-                                    You may expect a response from me shortly.
-                                </p>
-
-                                <p style='font-size:15px; line-height:1.7;'>
-                                    Until then, thank you once again for your interest and trust.
-                                </p>
-                            </div>
-
-                            <hr style='
-                                border:none;
-                                border-top:1px dashed #c2a76d;
-                                margin:25px 0;
-                            ' />
-
-                            <p style='font-size:14px;'>
-                                With warm regards,<br/>
-                                <b style='font-size:16px;'>Pavan Kumar N</b><br/>
-                                <span style='font-size:13px;'>Software Developer</span>
-                            </p>
-
-                        </div>
-                        ",
-
-                    IsBodyHtml = true
-                };
-
-                thankYouMail.To.Add(email);
-                await client.SendMailAsync(thankYouMail);
+                //await SendResendAsync(client, thankYouPayload);
 
                 return MailResult.SuccessResult();
             }
             catch (Exception ex)
             {
-                // You can log ex here using ILogger or Serilog
                 return MailResult.FailureResult(ex.Message);
+            }
+        }
+
+        private static async Task SendResendAsync(HttpClient client, object payload)
+        {
+            var content = new StringContent(
+                JsonSerializer.Serialize(payload),
+                Encoding.UTF8,
+                "application/json"
+            );
+
+            var response = await client.PostAsync(
+                "https://api.resend.com/emails",
+                content
+            );
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Resend API error: {error}");
             }
         }
     }
 
-    // ================= HELPER CLASS =================
+    // ================= HELPER =================
     public class MailResult
     {
         public bool Success { get; private set; }
