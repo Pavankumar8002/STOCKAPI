@@ -116,17 +116,40 @@ namespace STOCKWEBAPI.Repository.Portfolio
                {
                    from = _fromEmail,
                    to = new[] { email },
-                   subject = "Thank you for contacting Pavan's Portfolio",
+                   subject = "Thank you for contacting",
                    html = $@"
-                        <p>Hi <b>{name}</b>,</p>
-                        <p>
-                            Thank you for reaching out.
-                            I’ve received your message and will get back to you shortly.
-                        </p>
-                        <p>
-                            Regards,<br/>
-                            <b>Pavan Kumar N</b>
-                        </p>"
+<div style='
+    max-width:600px;
+    margin:20px auto;
+    padding:30px 40px;
+    background: linear-gradient(#1b2a1b, #0f1a0f); /* deep forest gradient */
+    border:2px solid #4a6b4a; /* subtle green border */
+    border-radius:12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    font-family: ""Garamond"", ""Georgia"", serif;
+    color:#c0c0a0;
+'>
+    <!-- Inner container with accent line -->
+    <div style='padding:20px; border-left:6px solid #a6c25f;'>
+        <p style='font-size:18px; color:#d0d0b0;'>Hi <b>{name}</b>,</p>
+
+        <p style='font-size:16px; line-height:1.7; color:#e0e0c0;'>
+            Thank you for reaching out.<br/>
+            I’ve received your message and will get back to you shortly.
+        </p>
+
+        <p style='font-size:16px; line-height:1.7; color:#d0d0b0;'>
+            With regards,<br/>
+            
+        </p>
+    </div>
+
+    <hr style='border:none; border-top:1px dashed #4a6b4a; margin:25px 0;' />
+
+    <p style='font-size:14px; color:#a0a080; text-align:center; letter-spacing:1px;'>
+        ✦ Pavan Kumar N✦
+    </p>
+</div>"
                };
 
                 await SendResendAsync(client, thankYouPayload);
