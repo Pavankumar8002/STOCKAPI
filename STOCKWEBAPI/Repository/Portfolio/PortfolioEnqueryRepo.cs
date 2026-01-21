@@ -111,25 +111,25 @@ namespace STOCKWEBAPI.Repository.Portfolio
 
                 await SendResendAsync(client, adminPayload);
 
-                // -------- THANK YOU EMAIL --------
-                //var thankYouPayload = new
-                //{
-                //    from = _fromEmail,
-                //    to = new[] { email },
-                //    subject = "Thank you for contacting Pavan's Portfolio",
-                //    html = $@"
-                //        <p>Hi <b>{name}</b>,</p>
-                //        <p>
-                //            Thank you for reaching out.
-                //            I’ve received your message and will get back to you shortly.
-                //        </p>
-                //        <p>
-                //            Regards,<br/>
-                //            <b>Pavan Kumar N</b>
-                //        </p>"
-                //};
+               // --------THANK YOU EMAIL --------
+               var thankYouPayload = new
+               {
+                   from = _fromEmail,
+                   to = new[] { email },
+                   subject = "Thank you for contacting Pavan's Portfolio",
+                   html = $@"
+                        <p>Hi <b>{name}</b>,</p>
+                        <p>
+                            Thank you for reaching out.
+                            I’ve received your message and will get back to you shortly.
+                        </p>
+                        <p>
+                            Regards,<br/>
+                            <b>Pavan Kumar N</b>
+                        </p>"
+               };
 
-                //await SendResendAsync(client, thankYouPayload);
+                await SendResendAsync(client, thankYouPayload);
 
                 return MailResult.SuccessResult();
             }
