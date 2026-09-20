@@ -616,11 +616,10 @@ namespace STOCKWEBAPI.Repository.Portfolio
                 // ============================================================
 
                 await smtp.ConnectAsync(
-                    "smtp.gmail.com",
-                    587,
-                    SecureSocketOptions.StartTls
-                );
-
+         "smtp.gmail.com",
+         465,
+         SecureSocketOptions.SslOnConnect
+     );
 
                 // ============================================================
                 // AUTHENTICATE
