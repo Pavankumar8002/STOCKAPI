@@ -447,24 +447,14 @@ namespace STOCKWEBAPI.Repository.Portfolio
         {
             try
             {
-                // ============================================================
-                // ADMIN EMAIL
-                // ============================================================
+               
 
                 var adminEmail = new MimeMessage();
 
-                adminEmail.From.Add(
-                    new MailboxAddress(
-                        "Pavan Kumar",
-                        _gmailEmail
-                    )
-                );
+                adminEmail.From.Add(new MailboxAddress("Pavan Kumar",_gmailEmail));
 
-                adminEmail.To.Add(
-                    MailboxAddress.Parse(_adminEmail)
-                );
+                adminEmail.To.Add(MailboxAddress.Parse(_adminEmail));
 
-                // Reply directly to the person who submitted the enquiry
                 adminEmail.ReplyTo.Add(
                     MailboxAddress.Parse(email)
                 );
@@ -493,26 +483,13 @@ namespace STOCKWEBAPI.Repository.Portfolio
 
                 adminEmail.Body = adminBody.ToMessageBody();
 
-
-                // ============================================================
-                // THANK YOU EMAIL
-                // ============================================================
-
                 var thankYouEmail = new MimeMessage();
 
-                thankYouEmail.From.Add(
-                    new MailboxAddress(
-                        "Pavan Kumar",
-                        _gmailEmail
-                    )
-                );
+                thankYouEmail.From.Add(new MailboxAddress("Pavan Kumar",_gmailEmail));
 
-                thankYouEmail.To.Add(
-                    MailboxAddress.Parse(email)
-                );
+                thankYouEmail.To.Add(MailboxAddress.Parse(email));
 
-                thankYouEmail.Subject =
-                    "Thank you for contacting Pavan Kumar";
+                thankYouEmail.Subject ="Thank you for contacting Pavan Kumar";
 
                 var thankYouBody = new BodyBuilder
                 {
@@ -582,15 +559,7 @@ namespace STOCKWEBAPI.Repository.Portfolio
 
                 thankYouEmail.Body = thankYouBody.ToMessageBody();
 
-
-                // ============================================================
-                // GMAIL SMTP
-                // ============================================================
-
                 using var smtp = new SmtpClient();
-
-                // Your Mac has a certificate revocation-check issue.
-                // Allow only the revocation-related validation failure.
                 smtp.ServerCertificateValidationCallback =
                     (sender, certificate, chain, sslPolicyErrors) =>
                     {
@@ -616,7 +585,7 @@ namespace STOCKWEBAPI.Repository.Portfolio
                             return true;
                         }
 
-                        // Allow only revocation-related errors
+                
                         if (sslPolicyErrors ==
                             System.Net.Security.SslPolicyErrors.RemoteCertificateChainErrors &&
                             chain?.ChainStatus != null)
