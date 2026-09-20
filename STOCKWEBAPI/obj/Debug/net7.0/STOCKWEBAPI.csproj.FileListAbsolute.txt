@@ -48,3 +48,10 @@
 /Users/Pavankumarn/Documents/projects/STOCKWEBAPI/STOCKWEBAPI/obj/Debug/net7.0/STOCKWEBAPI.pdb
 /Users/Pavankumarn/Documents/projects/STOCKWEBAPI/STOCKWEBAPI/obj/Debug/net7.0/STOCKWEBAPI.genruntimeconfig.cache
 /Users/Pavankumarn/Documents/projects/STOCKWEBAPI/STOCKWEBAPI/obj/Debug/net7.0/ref/STOCKWEBAPI.dll
+/Users/Pavankumarn/Documents/projects/STOCKWEBAPI/STOCKWEBAPI/bin/Debug/net7.0/BouncyCastle.Cryptography.dll
+/Users/Pavankumarn/Documents/projects/STOCKWEBAPI/STOCKWEBAPI/bin/Debug/net7.0/MailKit.dll
+/Users/Pavankumarn/Documents/projects/STOCKWEBAPI/STOCKWEBAPI/bin/Debug/net7.0/Microsoft.Bcl.Cryptography.dll
+/Users/Pavankumarn/Documents/projects/STOCKWEBAPI/STOCKWEBAPI/bin/Debug/net7.0/MimeKit.dll
+/Users/Pavankumarn/Documents/projects/STOCKWEBAPI/STOCKWEBAPI/bin/Debug/net7.0/System.Formats.Asn1.dll
+/Users/Pavankumarn/Documents/projects/STOCKWEBAPI/STOCKWEBAPI/bin/Debug/net7.0/System.Security.Cryptography.Pkcs.dll
+/Users/Pavankumarn/Documents/projects/STOCKWEBAPI/STOCKWEBAPI/bin/Debug/net7.0/System.Text.Encoding.CodePages.dll
