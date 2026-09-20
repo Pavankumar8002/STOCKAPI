@@ -578,7 +578,7 @@ namespace STOCKWEBAPI.Repository.Portfolio
                             }
                         }
 
-                        // Completely valid certificate
+                       
                         if (sslPolicyErrors ==
                             System.Net.Security.SslPolicyErrors.None)
                         {
