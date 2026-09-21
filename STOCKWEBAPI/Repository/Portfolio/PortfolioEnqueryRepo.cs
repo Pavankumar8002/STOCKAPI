@@ -132,7 +132,6 @@ namespace STOCKWEBAPI.Repository.Portfolio
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", _resendApiKey);
 
-                // -------- ADMIN EMAIL --------
                 var adminPayload = new
                 {
                     from = _fromEmail,
