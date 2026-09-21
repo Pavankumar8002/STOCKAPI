@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 using STOCKWEBAPI.DataEntities.Portfolio;
@@ -22,10 +23,10 @@ namespace STOCKWEBAPI.Repository.Portfolio
         public PortfolioEnqueryRepo(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection")
-                ?? throw new Exception("DefaultConnection missing");
+            ?? throw new Exception("DefaultConnection missing");
 
-            _resendApiKey = configuration["Resend:ApiKey"]
-                ?? throw new Exception("Resend ApiKey missing");
+            _resendApiKey = configuration["RESEND_API_KEY"]
+           ?? throw new Exception("Resend API key missing");
 
             _fromEmail = configuration["Resend:FromEmail"]
                 ?? throw new Exception("FromEmail missing");
