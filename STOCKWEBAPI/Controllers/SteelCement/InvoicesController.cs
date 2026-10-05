@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using STOCKWEBAPI.DataEntities.SteelCement;
+using STOCKWEBAPI.Repository.SteelCement;
+using STOCKWEBAPI.Service.SteelCement;
 using STOCKWEBAPI.ServiceInterface.SteelCement;
 
 namespace STOCKWEBAPI.Controllers.SteelCement;
@@ -7,7 +9,7 @@ namespace STOCKWEBAPI.Controllers.SteelCement;
 public class InvoicesController : ControllerBase
 {
     private readonly ISteelCementService _s;
-    public InvoicesController(ISteelCementService s)=>_s=s;
+    public InvoicesController(IConfiguration configuration, ISteelCementService? service = null)=>_s=service??new SteelCementService(new SteelCementRepository(configuration));
     [HttpGet] public async Task<IActionResult> Get()=>Ok(await _s.GetInvoices());
     [HttpGet("{id:guid}")] public async Task<IActionResult> Get(Guid id)=>(await _s.GetInvoice(id)) is { } x?Ok(x):NotFound();
     [HttpPost] public async Task<IActionResult> Post(InvoiceDto x)=>Ok(await _s.CreateInvoice(x));
